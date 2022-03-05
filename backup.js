@@ -11,7 +11,7 @@ const backupDirPath = path.join(__dirname, "database-backup");
 const storeFileOnAzure = async (file) => {
   const account = process.env.ACCOUNT_NAME;
   const accountKey = process.env.ACCOUNT_KEY;
-  const containerName = "files";
+  const containerName = "dbsnapshots";
 
   const sharedKeyCredential = new StorageSharedKeyCredential(
     account,
