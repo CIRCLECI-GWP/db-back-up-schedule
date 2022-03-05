@@ -34,7 +34,7 @@ const storeFileOnAzure = async (file) => {
   );
 };
 
-let cmd = `mongodump --out=${backupDirPath} --uri=${process.env.MONGODB_URI} --forceTableScan`;
+let cmd = `mongodump --forceTableScan --out=${backupDirPath} --uri=${process.env.MONGODB_URI}`;
 
 const dbAutoBackUp = () => {
   let filePath = backupDirPath + `/db-back-up-schedule/companies.bson`;
