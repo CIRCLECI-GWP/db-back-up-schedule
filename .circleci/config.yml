@@ -9,7 +9,32 @@ jobs:
       - heroku/install
       - heroku/deploy-via-git:
           force: true
+  schedule_backup:
+    working_directory: ~/project
+    docker:
+      - image: cimg/node:17.4.0
+    steps:
+      - checkout
+      - run:
+          name: Install MongoDB Tools.
+          command: |
+            npm install
+            sudo apt-get update
+            sudo apt-get install -y mongodb
+      - run:
+          name: Run database back up
+          command: npm run backup
+parameters:
+  run-schedule:
+    type: boolean
+    default: false
 workflows:
   deploy:
+    when:
+      not: << pipeline.parameters.run-schedule >>
     jobs:
       - build
+  backup:
+    when: << pipeline.parameters.run-schedule >>
+    jobs:
+      - schedule_backup
