@@ -25,7 +25,7 @@ const storeFileOnAzure = async (file) => {
   );
 
   const container = blobServiceClient.getContainerClient(containerName);
-  const blobName = "backup.bson";
+  const blobName = "companies.bson";
   const blockBlobClient = container.getBlockBlobClient(blobName);
   const uploadBlobResponse = await blockBlobClient.uploadFile(file);
   console.log(
