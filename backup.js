@@ -1,9 +1,6 @@
-const fs = require("fs");
-const _ = require("lodash");
+require("dotenv").config();
 const exec = require("child_process").exec;
 const path = require("path");
-require("dotenv").config();
-
 const {
   BlobServiceClient,
   StorageSharedKeyCredential,
@@ -21,6 +18,7 @@ const storeFileOnAzure = async (file) => {
     accountKey
   );
 
+  // instantiate Client
   const blobServiceClient = new BlobServiceClient(
     `https://${account}.blob.core.windows.net`,
     sharedKeyCredential
@@ -28,9 +26,7 @@ const storeFileOnAzure = async (file) => {
 
   const container = blobServiceClient.getContainerClient(containerName);
   const blobName = "backup.bson";
-
   const blockBlobClient = container.getBlockBlobClient(blobName);
-
   const uploadBlobResponse = await blockBlobClient.uploadFile(file);
   console.log(
     `Upload block blob ${blobName} successfully`,
@@ -38,12 +34,10 @@ const storeFileOnAzure = async (file) => {
   );
 };
 
-let cmd = `mongodump --out=${backupDirPath} --uri ${process.env.MONGODB_URI}`;
+let cmd = `mongodump --out=${backupDirPath} --uri=${process.env.MONGODB_URI} --forceTableScan`;
 
-// Auto backup function
 const dbAutoBackUp = () => {
-  let filePath = backupDirPath + "/companiesdb/companies.bson";
-
+  let filePath = backupDirPath + `/companiesdb/companies.bson`;
   exec(cmd, (error, stdout, stderr) => {
     console.log([cmd, error, backupDirPath]);
     storeFileOnAzure(filePath);
